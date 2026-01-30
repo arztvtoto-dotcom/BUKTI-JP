@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TVTOTO Premium Generator & Live Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --admin-bg: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            --admin-border: #2a2a2a;
+            --accent-primary: #ffd700;
+            --accent-secondary: #ff6b35;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-premium: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #000;
+            overflow-x: hidden;
+        }
+
+        /* ============================
+           PREMIUM ADMIN PANEL
+        ============================ */
+        .admin-panel {
+            position: sticky;
+            top: 0;
+            z-index: 99999;
+            background: linear-gradient(135deg, rgba(15, 15, 15, 0.98) 0%, rgba(26, 26, 26, 0.95) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 2px solid transparent;
+            border-image: linear-gradient(90deg, transparent, var(--accent-primary), transparent) 1;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.1);
+            padding: 30px 40px;
+        }
+
+        /* Header Section */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .admin-title::before {
+            content: '⚡';
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px #ffd700);
+        }
+
+        .admin-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), transparent);
+            border-radius: 2px;
+        }
+
+        /* Control Buttons */
+        .admin-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, #ffed4e 100%);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-copy::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-copy:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-copy:active {
+            transform: translateY(-1px);
+        }
+
+        /* Input Group - Glass Morphism */
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: var(--glass-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-primary);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* File Input Custom Style */
+        .form-input[type="file"] {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .form-input[type="file"]::file-selector-button {
+            background: linear-gradient(135deg, #a80000, #ff3333);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .form-input[type="file"]::file-selector-button:hover {
+            background: linear-gradient(135deg, #ff3333, #ff6666);
+        }
+
+        /* Generate Button */
+        .btn-gen {
+            background: linear-gradient(135deg, #a80000 0%, #ff3333 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            box-shadow: 0 5px 25px rgba(168, 0, 0, 0.4);
+            grid-column: span 2;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-gen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-gen:hover::before {
+            left: 100%;
+        }
+
+        .btn-gen:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 40px rgba(255, 0, 0, 0.6);
+        }
+
+        .btn-gen:active {
+            transform: translateY(-1px) scale(1);
+        }
+
+        /* Status Message */
+        .status-msg {
+            color: #0f0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* ============================
+           SCRIPT MANAGER - PREMIUM
+        ============================ */
+        .script-manager {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            margin-top: 25px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .script-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .script-toggle-btn {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--accent-primary);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 10px 24px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .script-toggle-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .script-info {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        #sourceScriptArea {
+            width: 100%;
+            height: 350px;
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            padding: 20px;
+            margin-top: 15px;
+            resize: vertical;
+            font-size: 13px;
+            display: none;
+            border-radius: 12px;
+            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        #sourceScriptArea.open {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 350px;
+            }
+        }
+
+        #sourceScriptArea:focus {
+            outline: none;
+            border-color: #0f0;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .btn-reload {
+            background: linear-gradient(135deg, #333, #555);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-reload:hover {
+            background: linear-gradient(135deg, #555, #777);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* ============================
+           PREVIEW CONTAINER
+        ============================ */
+        #previewContainer {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-panel {
+                padding: 20px;
+            }
+
+            .admin-title {
+                font-size: 1.2rem;
+            }
+
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-gen {
+                grid-column: span 1;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .loading {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            background-size: 1000px 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- PREMIUM ADMIN PANEL -->
+    <div class="admin-panel">
+        <div class="admin-header">
+            <h1 class="admin-title">Dashboard Premium Generator</h1>
+            <div class="admin-controls">
+                <button class="btn-copy" onclick="copyFullScript()">
+                    <span style="position: relative; z-index: 1;">📋 Copy Full Script</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div class="input-group">
+            <input type="text" id="inpUser" class="form-input" placeholder="👤 Username [abcd]">
+            <input type="number" id="inpAmount" class="form-input" placeholder="💰 Jumlah (50000000)">
+            <input type="text" id="inpGame" class="form-input" placeholder="🎮 Nama Game">
+            <input type="file" id="inpFile" class="form-input" accept="image/*">
+            <input type="text" id="inpUrl" class="form-input" placeholder="🔗 ATAU URL Gambar">
+            <input type="text" id="inpMsg" class="form-input" placeholder="💬 Pesan Kemenangan...">
+            
+            <button class="btn-gen" onclick="processAdd()">
+                <span style="position: relative; z-index: 1;">✨ Tambah & Update Preview</span>
+            </button>
+            
+            <span id="statusMsg" class="status-msg">
+                <span>✅</span> Gambar Siap!
+            </span>
+        </div>
+
+        <!-- Script Manager -->
+        <div class="script-manager">
+            <div class="script-header">
+                <button class="script-toggle-btn" onclick="toggleScriptArea()">
+                    <span>📝</span>
+                    <span>Toggle Script Editor</span>
+                </button>
+                <button class="btn-reload" onclick="loadSourceManual()">
+                    <span>🔄</span>
+                    <span>Reload Script</span>
+                </button>
+            </div>
+            <p class="script-info">
+                💡 Area untuk menempel (paste) script HTML lama Anda. Klik "Reload Script" setelah mengubah isi manual.
+            </p>
+            <textarea id="sourceScriptArea" placeholder="// Paste Script HTML Lama Anda Di Sini..."></textarea>
+        </div>
+    </div>
+
+    <!-- PREVIEW AREA -->
+    <div id="previewContainer"></div>
+
+    <!-- MAIN SCRIPT LOGIC -->
+    <script>
+        // Initial HTML Template
+        const initialHTML = `
+<style>
+/* --- CSS VARIABLES & RESET --- */
+:root {
+--bg-dark: #0a0000;
+--bg-card: #1a0505;
+--primary-red: #a80000;
+--accent-gold: #ffd700;
+--text-white: #ffffff;
+--text-muted: #ffcccc;
+--glass: rgba(255, 255, 255, 0.05);
+--border-glow: rgba(255, 215, 0, 0.3);
+--shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+#preview-body {
+    background: radial-gradient(circle at center, #200000 0%, var(--bg-dark) 100%);
+    color: var(--text-white);
+    font-family: "Poppins", sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+/* --- SNOW EFFECT (Money Rain) --- */
+.snowflake {
+position: fixed;
+top: -10px;
+z-index: 9999;
+color: var(--accent-gold);
+font-size: 1.2em;
+pointer-events: none;
+user-select: none;
+animation-name: fall;
+animation-timing-function: linear;
+filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+}
+@keyframes fall {
+0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+10% { opacity: 1; }
+100% { transform: translateY(110vh) rotate(360deg); opacity: 0.5; }
+}
+/* --- RUNNING TEXT HEADER --- */
+.header-bar {
+position: sticky;
+top: 0;
+z-index: 1000;
+background: rgba(0, 0, 0, 0.9);
+border-bottom: 2px solid var(--primary-red);
+box-shadow: 0 4px 20px rgba(168, 0, 0, 0.4);
+backdrop-filter: blur(10px);
+padding: 12px 0;
+}
+.marquee-container { overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+.marquee-content {
+display: inline-block;
+padding-left: 100%;
+animation: scroll 25s linear infinite;
+font-weight: 800;
+font-size: 1.1rem;
+text-transform: uppercase;
+letter-spacing: 1px;
+color: var(--text-white);
+background: linear-gradient(90deg, #ff4d4d, #ffd700, #ff4d4d);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+/* --- MAIN LAYOUT --- */
+main { max-width: 1400px; margin: 40px auto; padding: 0 20px; position: relative; z-index: 10;}
+.section-title {
+text-align: center;
+font-size: 2.5rem;
+margin-bottom: 40px;
+font-weight: 800;
+text-transform: uppercase;
+color: var(--text-white);
+text-shadow: 0 0 10px var(--primary-red);
+position: relative;
+display: inline-block;
+left: 50%;
+transform: translateX(-50%);
+}
+.section-title::after {
+content: '';
+display: block;
+width: 60%;
+height: 4px;
+background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+margin: 10px auto 0;
+}
+/* --- GRID SYSTEM --- */
+.winner-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+gap: 25px;
+}
+/* --- WINNER CARD --- */
+.winner-card {
+background: linear-gradient(145deg, rgba(30, 5, 5, 0.9), rgba(10, 0, 0, 0.95));
+border: 1px solid rgba(168, 0, 0, 0.3);
+border-radius: 16px;
+padding: 20px;
+position: relative;
+overflow: hidden;
+transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+display: flex;
+flex-direction: column;
+}
+.winner-card::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0; height: 4px;
+background: linear-gradient(90deg, var(--primary-red), var(--accent-gold));
+opacity: 0;
+transition: opacity 0.3s;
+}
+.winner-card:hover {
+transform: translateY(-10px);
+border-color: var(--accent-gold);
+box-shadow: 0 15px 30px rgba(168, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
+}
+.winner-card:hover::before { opacity: 1; }
+.badge {
+background: var(--primary-red);
+color: #fff;
+padding: 5px 12px;
+border-radius: 20px;
+font-size: 0.75rem;
+font-weight: 700;
+align-self: flex-start;
+margin-bottom: 15px;
+box-shadow: 0 2px 10px rgba(168, 0, 0, 0.4);
+display: flex;
+align-items: center;
+gap: 5px;
+}
+.img-wrapper {
+width: 100%;
+height: 220px;
+border-radius: 12px;
+overflow: hidden;
+margin-bottom: 20px;
+background: #000;
+cursor: zoom-in;
+border: 1px solid rgba(255,255,255,0.1);
+position: relative;
+}
+.img-wrapper img {
+width: 100%;
+height: 100%;
+object-fit: contain;
+transition: transform 0.5s ease;
+}
+.img-wrapper:hover img { transform: scale(1.1); }
+.card-info h3 { font-size: 1.1rem; color: var(--text-white); margin-bottom: 5px; font-weight: 600; }
+.prize-amount {
+font-size: 1.4rem;
+color: var(--accent-gold);
+font-weight: 800;
+text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+margin-bottom: 8px;
+display: block;
+}
+.game-name {
+font-size: 0.9rem;
+color: var(--text-muted);
+font-style: italic;
+margin-bottom: 15px;
+display: block;
+border-bottom: 1px solid rgba(255,255,255,0.1);
+padding-bottom: 10px;
+}
+.message {
+font-size: 0.85rem;
+color: #ddd;
+background: rgba(255,255,255,0.03);
+padding: 10px;
+border-radius: 8px;
+border-left: 3px solid var(--accent-gold);
+}
+/* --- MODAL --- */
+.modal {
+display: none;
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background: rgba(0, 0, 0, 0.9);
+z-index: 10000;
+align-items: center;
+justify-content: center;
+opacity: 0;
+transition: opacity 0.3s ease;
+backdrop-filter: blur(5px);
+}
+.modal.active { display: flex; opacity: 1; }
+.modal-content {
+max-width: 90%;
+max-height: 90vh;
+border-radius: 8px;
+box-shadow: 0 0 50px rgba(255, 0, 0, 0.2);
+transform: scale(0.8);
+transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+border: 2px solid var(--primary-red);
+}
+.modal.active .modal-content { transform: scale(1); }
+.close-modal {
+position: absolute;
+top: 20px;
+right: 30px;
+color: #fff;
+font-size: 50px;
+cursor: pointer;
+transition: color 0.3s;
+z-index: 10001;
+}
+.close-modal:hover { color: var(--primary-red); }
+</style>
+<!-- Header / Running Text -->
+<header class="header-bar">
+<div class="marquee-container">
+<div class="marquee-content">SELAMAT DATANG DI TVTOTO BANDAR BOLA & TOGEL & SLOT TERPERCAYA INDONESIA MENANG BERAPAPUN PASTI DIBAYAR !!! &nbsp;&nbsp;&nbsp;&nbsp; &bull; &nbsp;&nbsp;&nbsp;&nbsp; WITHDRAW MUDAH DAN CEPAT TANPA KENDALA &nbsp;&nbsp;&nbsp;&nbsp; &bull; &nbsp;&nbsp;&nbsp;&nbsp; JANGAN TUNDA REJEKIMU, RAIH KEMENANGAN BESAR SEKARANG!</div>
+</div>
+</header>
+<!-- Main Content -->
+<main>
+<h1 class="section-title">TVTOTO</h1>
+<div class="winner-grid">
+<!-- Winner 1 -->
+<article class="winner-card">
+<div class="badge">🎉 WITHDRAW SUCCESS</div>
+<figure class="img-wrapper"><img src="https://cdn.areabermain.club/assets/cdn/az1/2026/01/21/20260121/36fe7ad4acabae9b2a075f2d27e79d6c/whatsapp-image-2026-01-21-at-17-06-46.jpeg" alt="Winner Proof" loading="lazy" /></figure>
+<div class="card-info">
+<h3>User: [kexxxxg]</h3>
+<span class="prize-amount">Rp 100.000.000</span> <span class="game-name">PP LIVE - Korean Speed Baccarat 1</span>
+<div class="message">"Wah, kamu memang beruntung! Semoga kemenangan ini membawa lebih banyak rezeki."</div>
+</div>
+</article>
+<!-- Winner 2 -->
+<article class="winner-card">
+<div class="badge">🎉 WITHDRAW SUCCESS</div>
+<figure class="img-wrapper"><img src="https://cdn.areabermain.club/assets/cdn/az1/2026/01/21/20260121/96374fc57cce0da2f2449242b586768b/whatsapp-image-2026-01-20-at-10-02-11.jpeg" alt="Winner Proof" loading="lazy" /></figure>
+<div class="card-info">
+<h3>User: [kaxxxxx32]</h3>
+<span class="prize-amount">Rp 112.000.000</span> <span class="game-name">PP - Gates of Olympus Super Scatter</span>
+<div class="message">"Withdraw mudah dan Cepat Tanpa ada kendala apapun, Hanya di TVTOTO."</div>
+</div>
+</article>
+<!-- Winner 3 -->
+<article class="winner-card">
+<div class="badge">🎉 WITHDRAW SUCCESS</div>
+<figure class="img-wrapper"><img src="https://cdn.areabermain.club/assets/cdn/az1/2026/01/19/20260119/92b49dae278e1a1c8f2abd95884dc489/lebaran-semakin-dekat-cari-tambahan-thr-silahkan-merapat-ikan-sepat-di-atas-kompor-jangan-takut-rungkat-sudah-pasti-gacor-1.png" alt="Winner Proof" loading="lazy" /></figure>
+<div class="card-info">
+<h3>User: [txxxxxx2]</h3>
+<span class="prize-amount">Rp 200.000.000</span> <span class="game-name">Lottery - HOKI DRAW</span>
+<div class="message">"Jangan Tunda Rezekimu! Bermain sekarang &amp; raih kemenangan BESAR!"</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Modal for Image Zoom -->
+<div id="imageModal" class="modal"><span class="close-modal">&times;</span> <img class="modal-content" id="modalImg" /></div>
+<!-- Logic for Preview -->
+<script>
+// Script Hujan Uang
+function createSnowflake() {
+const snowflake = document.createElement("div");
+snowflake.classList.add("snowflake");
+snowflake.textContent = "💵";
+snowflake.style.left = Math.random() * window.innerWidth + "px";
+snowflake.style.fontSize = Math.random() * 20 + 10 + "px";
+snowflake.style.animationDuration = Math.random() * 3 + 4 + "s";
+snowflake.style.opacity = Math.random();
+document.getElementById('preview-body').appendChild(snowflake);
+setTimeout(() => { snowflake.remove(); }, 7000);
+}
+setInterval(createSnowflake, 400);
+// Logic Modal Zoom
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImg");
+const closeBtn = document.querySelector(".close-modal");
+function attachModalEvents() {
+    const images = document.querySelectorAll(".img-wrapper img");
+    images.forEach(img => {
+        const newImg = img.cloneNode(true);
+        img.parentNode.replaceChild(newImg, img);
+        
+        newImg.addEventListener("click", () => {
+            if(newImg.src.includes("via.placeholder.com")) return;
+            modal.classList.add("active");
+            modalImg.src = newImg.src;
+        });
+    });
+}
+function closeModal() { modal.classList.remove("active"); }
+closeBtn.addEventListener("click", closeModal);
+modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', function(event) { if (event.key === "Escape") closeModal(); });
+setTimeout(attachModalEvents, 500);
+<\/script>`;
+
+        const previewContainer = document.getElementById('previewContainer');
+        const sourceScriptArea = document.getElementById('sourceScriptArea');
+        const statusMsg = document.getElementById('statusMsg');
+
+        // Initialize
+        window.onload = function() {
+            sourceScriptArea.value = initialHTML;
+            renderPreview(sourceScriptArea.value);
+        };
+
+        // Toggle Script Area
+        function toggleScriptArea() {
+            sourceScriptArea.classList.toggle('open');
+        }
+
+        // Load Manual
+        function loadSourceManual() {
+            renderPreview(sourceScriptArea.value);
+            showNotification("✅ Script berhasil dimuat dari editor!", "success");
+        }
+
+        // Render Preview
+        function renderPreview(htmlContent) {
+            const wrapper = `<div id="preview-body">${htmlContent}</div>`;
+            previewContainer.innerHTML = wrapper;
+        }
+
+        // Process Add Data
+        function processAdd() {
+            const user = document.getElementById('inpUser').value.trim();
+            const amountRaw = document.getElementById('inpAmount').value.trim();
+            const game = document.getElementById('inpGame').value.trim();
+            const msg = document.getElementById('inpMsg').value.trim();
+            const urlInput = document.getElementById('inpUrl').value.trim();
+            const fileInput = document.getElementById('inpFile');
+
+            if(!user || !amountRaw || !game) {
+                showNotification("⚠️ Mohon isi Username, Jumlah, dan Game!", "warning");
+                return;
+            }
+
+            const amount = "Rp " + parseInt(amountRaw).toLocaleString('id-ID');
+
+            const executeInsert = (finalSrc) => {
+                const newBlock = `<!-- Winner New -->
+<article class="winner-card">
+<div class="badge">🎉 WITHDRAW SUCCESS</div>
+<figure class="img-wrapper"><img src="${finalSrc}" alt="Winner Proof" loading="lazy" /></figure>
+<div class="card-info">
+<h3>User: ${user}</h3>
+<span class="prize-amount">${amount}</span> <span class="game-name">${game}</span>
+<div class="message">"${msg || 'Kemenangan luar biasa! Terima kasih TVTOTO!'}"</div>
+</div>
+</article>
+`;
+                let currentHTML = sourceScriptArea.value;
+                const gridStartTag = '<div class="winner-grid">';
+                const insertIndex = currentHTML.indexOf(gridStartTag) + gridStartTag.length;
+                
+                if (insertIndex > 0) {
+                    const before = currentHTML.substring(0, insertIndex);
+                    const after = currentHTML.substring(insertIndex);
+                    const newScript = before + "\n" + newBlock + after;
+                    
+                    sourceScriptArea.value = newScript;
+                    renderPreview(newScript);
+                    
+                    // Reset Form
+                    document.getElementById('inpUser').value = "";
+                    document.getElementById('inpAmount').value = "";
+                    document.getElementById('inpGame').value = "";
+                    document.getElementById('inpMsg').value = "";
+                    document.getElementById('inpUrl').value = "";
+                    fileInput.value = "";
+                    statusMsg.style.display = "none";
+                    
+                    showNotification("✅ Data berhasil ditambahkan ke preview!", "success");
+                    setTimeout(() => {
+                        window.scrollTo({ top: previewContainer.offsetTop - 100, behavior: 'smooth' });
+                    }, 300);
+                }
+            };
+
+            // Handle Image
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                statusMsg.style.display = "flex";
+                statusMsg.innerHTML = '<span>⏳</span> Memproses Gambar...';
+                
+                reader.onload = function(e) {
+                    statusMsg.innerHTML = '<span>✅</span> Gambar Siap!';
+                    setTimeout(() => executeInsert(e.target.result), 500);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else if (urlInput) {
+                executeInsert(urlInput);
+            } else {
+                showNotification("⚠️ Harap upload gambar atau masukkan URL!", "warning");
+            }
+        }
+
+        // Copy Full Script
+        function copyFullScript() {
+            sourceScriptArea.select();
+            document.execCommand('copy');
+            showNotification("✅ Full Script HTML berhasil disalin ke clipboard!", "success");
+        }
+
+        // Notification System
+        function showNotification(message, type = "info") {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 30px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #00b894, #00cec9)' : type === 'warning' ? 'linear-gradient(135deg, #fdcb6e, #e17055)' : 'linear-gradient(135deg, #6c5ce7, #a29bfe)'};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                font-weight: 600;
+                z-index: 999999;
+                animation: slideIn 0.4s ease;
+                max-width: 400px;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.4s ease';
+                setTimeout(() => notification.remove(), 400);
+            }, 3000);
+        }
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
